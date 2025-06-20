@@ -7,9 +7,8 @@
 ## ✨ Features
 
 -  Add and manage **everyday tasks** with a smooth, minimal interface
--  Use **Ping Mode** to set time-bound urgent tasks (e.g., “Take a break in 20 minutes”)
+-  Use **Ping Mode** to set time-bound urgent tasks (e.g., “Take a break for 20 minutes”)
 -  **Popup alert** appears when an urgent task timer ends
--  **Blue-themed UI** with **big cursive fonts** for a relaxed, handwritten vibe
 -  **LocalStorage-based** persistence — no account needed
 -  **Responsive design** — works beautifully across devices
 -  Optional mood setting that changes UI tone subtly
