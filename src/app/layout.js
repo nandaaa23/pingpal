@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "PingPal - Dramatic Task & Reminder App",
+  title: "PingPal - Task Reminder App",
   description: "A visually expressive, blue-themed task and reminder app with a custom designer font.",
 };
 

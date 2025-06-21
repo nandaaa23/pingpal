@@ -66,12 +66,17 @@ export default function PingPal() {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // Check for expired pings and show popup
+  // Check for expired pings and show popup with alarm
   useEffect(() => {
     if (alertPing) return; // Only one alert at a time
     const expired = pings.find((p) => p.expiresAt <= now);
     if (expired) {
       setAlertPing(expired);
+      // Play alarm sound
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0; // Reset to beginning
+        audioRef.current.play().catch(e => console.log('Audio play failed:', e));
+      }
     }
   }, [pings, now, alertPing]);
 
@@ -157,6 +162,11 @@ export default function PingPal() {
   // Dismiss popup and remove expired ping
   function handleAlertClose() {
     if (alertPing) {
+      // Stop alarm sound
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       deletePing(alertPing.id);
       setAlertPing(null);
     }
@@ -167,6 +177,9 @@ export default function PingPal() {
 
   return (
     <div className={`relative w-full min-h-screen flex flex-col items-center py-8 px-2 transition-all duration-500 ${moodColor} overflow-hidden`}>
+      {/* Hidden audio element for alarm */}
+      <audio ref={audioRef} src="/alarm.mp3" preload="auto" />
+      
       {/* Decorative Blobs - larger and more for visual fill */}
       <div className="pointer-events-none select-none absolute top-[-15%] left-[-20%] w-[500px] h-[500px] bg-blue-300 opacity-40 rounded-full blur-3xl z-0" />
       <div className="pointer-events-none select-none absolute bottom-[-15%] right-[-20%] w-[500px] h-[500px] bg-blue-400 opacity-40 rounded-full blur-3xl z-0" />
@@ -187,7 +200,7 @@ export default function PingPal() {
           {rain.emoji}
         </span>
       ))}
-      {/* Left: Responsive Emoji Column */}
+      
       <div className="fixed top-1/2 left-2 -translate-y-1/2 flex flex-col gap-4 items-center z-30">
         {ICONS.map((icon, i) => (
           <button
@@ -206,7 +219,7 @@ export default function PingPal() {
         <div className="w-full max-w-5xl flex flex-col items-center">
           <header className="mb-8 text-center">
             <h1 className="text-5xl md:text-7xl font-extrabold text-blue-950 drop-shadow-lg mb-2">PingPal</h1>
-            <p className="text-xl md:text-2xl text-blue-900 font-extrabold">Dramatic, expressive tasks & reminders</p>
+            <p className="text-xl md:text-2xl text-blue-900 font-extrabold">Task reminder app</p>
           </header>
 
           {/* Mood Selector */}
@@ -224,7 +237,7 @@ export default function PingPal() {
           </div>
 
           {/* Task List */}
-          <section className="w-full max-w-xl bg-white/90 rounded-3xl shadow-lg p-6 mb-8">
+          <section className="w-full max-w-2xl mb-8">
             <h2 className="text-3xl font-extrabold text-blue-950 mb-4">Tasks</h2>
             <form onSubmit={addTask} className="flex gap-2 mb-4">
               <input
@@ -254,7 +267,7 @@ export default function PingPal() {
           </section>
 
           {/* Ping Mode */}
-          <section className="w-full max-w-xl bg-white/90 rounded-3xl shadow-lg p-6 mb-8">
+          <section className="w-full max-w-2xl mb-8">
             <h2 className="text-3xl font-extrabold text-blue-950 mb-4">Ping Mode</h2>
             <form onSubmit={addPing} className="flex flex-col sm:flex-row gap-2 mb-4">
               <input
